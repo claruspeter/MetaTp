@@ -1,0 +1,5 @@
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    FAKE (4.23)
+    FSharp.TypeProviders.StarterPack (1.1.3.88)
