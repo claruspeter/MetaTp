@@ -45,6 +45,7 @@
     <Compile Include="packages/FSharp.TypeProviders.StarterPack/content/ProvidedTypes.fs" />
     <Content Include="packages/FSharp.TypeProviders.StarterPack/content/ProvidedTypes.fsi" />
     <Compile Include="metatp.fs" />
+    <Compile Include="metatp.sample.fs" />
     <None Include="Script.fsx" />
 
   </ItemGroup>
