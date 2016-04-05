@@ -11,3 +11,10 @@ type test = Fred.Pizza<"q">
 
 printfn "%A" test.Address.NAME
 printfn "%A" test.Address.Street
+
+let jjj = test.Proxies.Address()
+jjj.Street <- "Dinnis Ave"
+jjj.Number <- 19
+jjj.Street
+jjj.Number
+jjj

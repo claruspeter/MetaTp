@@ -11,8 +11,6 @@ type MetaTable = {name: string; columns: MetaColumn[]}
 
 
 module helper =
-
-
   let provAsm = ProvidedAssembly(Path.ChangeExtension(Path.GetTempFileName(), ".dll"))
 
   let makeType asm ns typeName =
@@ -43,16 +41,65 @@ module helper =
     |> addMember (createStaticProp "NAME" table.name)
     |> addMembers (table.columns|> Array.map (fun t->t.name) |> toStaticProps)
 
+module proxyHelper =
+  open helper
+  open Microsoft.FSharp.Quotations
+
+  let makeProvidedPrivateReadonlyField fieldName fieldType =
+    let field = ProvidedField(fieldName, fieldType)
+    field.SetFieldAttributes(FieldAttributes.Private )
+    field
+
+  let makeInstanceProp (field:ProvidedField) (enclosingType:ProvidedTypeDefinition) =
+      let name = field.Name.Substring(1)
+      let propType = field.FieldType
+      let prop = ProvidedProperty(
+                  name,
+                  propType,
+                  IsStatic = false,
+                  GetterCode = fun args ->
+                      let fieldGet = Expr.FieldGet(args.[0], field)
+                      fieldGet
+                  ,SetterCode = fun args ->
+                      let fieldSet = Expr.FieldSet(args.[0], field, args.[1])
+                      fieldSet
+                  )
+      prop
+
+  let createCtor nameOfEnclosingType =
+    let ctor = ProvidedConstructor(
+                parameters = [],
+                InvokeCode = fun args ->
+                    <@@ "" :> obj @@>
+                )
+    ctor.AddXmlDocDelayed( fun ()-> "Initializes an instance of " + nameOfEnclosingType )
+    ctor
+
+  let makeProxy (table:MetaTable) =
+    let fields =
+      table.columns
+      |> Array.map ( fun col -> makeProvidedPrivateReadonlyField ("_" + col.name) col.coltype )
+
+    let proxy =
+      makeIncludedType table.name
+      |> addMembers fields
+      |> addMember (createCtor table.name)
+      //|> addMember (createSimpleToString name)
+
+    let propertythunk (col:ProvidedField) = makeInstanceProp col proxy
+    proxy |> addMembers ( fields |> Array.map ( propertythunk ))
+
+
 
 open helper
-
+open proxyHelper
 
 type MetaProvider(
-      config: TypeProviderConfig,
-      ns:string,
-      typeName:string,
-      tables: obj[] -> MetaTable[]
-    ) as this =
+                    config: TypeProviderConfig,
+                    ns:string,
+                    typeName:string,
+                    tables: obj[] -> MetaTable[]
+                  ) as this =
   inherit TypeProviderForNamespaces()
   let asm = (Assembly.LoadFrom(config.RuntimeAssembly))
   let para = ProvidedStaticParameter("A", typeof<string>)
@@ -64,6 +111,7 @@ type MetaProvider(
         typeName
           |> makeType asm ns
           |> addMembers (tableData |> Array.map twoLevelProp)
+          |> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
   do
