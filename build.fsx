@@ -6,6 +6,7 @@ open Fake
 // Directories
 let buildDir  = "./build/"
 let deployDir = "./deploy/"
+let packagedDir = "./packaged/"
 
 
 // Filesets
@@ -33,6 +34,31 @@ Target "Deploy" (fun _ ->
         |> Zip buildDir (deployDir + "ApplicationName." + version + ".zip")
 )
 
+Target "CreatePackage" (fun _ ->
+  //CopyFiles buildDir packagedDir
+
+  NuGet (fun p ->
+    {p with
+      Authors = ["@peterchch"]
+      Project = "MetaTp"
+      Description = "A meta type provider for creating simple type providers from plain old f# objects"
+      OutputPath = packagedDir
+      WorkingDir = "."
+      Summary = "A meta type provider for creating simple type providers from plain old f# objects"
+      Version = "0.1"
+      //AccessKey = myAccesskey
+      Publish = false
+      Files = [(buildDir + @"metatp.dll", Some @"lib", None) ]
+      DependenciesByFramework =
+        [{
+          FrameworkVersion  = "net45"
+          Dependencies =
+            ["FSharp.TypeProviders.StarterPack", GetPackageVersion "./packages/" "FSharp.TypeProviders.StarterPack"]
+        }]
+      }
+    )
+    "metatp.nuspec"
+)
 // Build order
 "Clean"
   ==> "Build"

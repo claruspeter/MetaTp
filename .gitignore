@@ -32,3 +32,6 @@ _ReSharper*/
 [Bb]uild/
 .fake/
 .paket/
+deploy/
+packaged/
+[Nn]u[Gg]et/
