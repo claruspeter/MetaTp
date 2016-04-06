@@ -48,7 +48,7 @@ Target "CreatePackage" (fun _ ->
       Version = "0.1"
       //AccessKey = myAccesskey
       Publish = false
-      Files = [(buildDir + @"metatp.dll", Some @"lib", None) ]
+      Files = [(@"build/metatp.dll", Some @"lib", None) ]
       DependenciesByFramework =
         [{
           FrameworkVersion  = "net45"
