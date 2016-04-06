@@ -7,7 +7,7 @@
 open metatp
 open metatp.sample
 // Define your library scripting code here
-type test = Fred.Pizza<"q">
+type test = Fred.Pizza<"asjhdgajshgd","qgqgqgq">
 
 printfn "%A" test.Address.NAME
 printfn "%A" test.Address.Street

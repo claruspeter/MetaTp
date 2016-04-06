@@ -12,11 +12,12 @@ type MetaProvider(
                     config: TypeProviderConfig,
                     ns:string,
                     typeName:string,
+                    initialisationParameters: MetaColumn list,
                     tables: obj[] -> MetaTable[]
                   ) as this =
   inherit TypeProviderForNamespaces()
   let asm = (Assembly.LoadFrom(config.RuntimeAssembly))
-  let para = ProvidedStaticParameter("A", typeof<string>)
+  let para = initialisationParameters |> List.map (fun p -> ProvidedStaticParameter(p.name, p.coltype))
   let schema = helper.makeType asm ns typeName
 
   let buildSchema =
@@ -31,7 +32,4 @@ type MetaProvider(
   do
     this.AddNamespace(ns, [helper.addIncludedType schema])
   do
-    schema.DefineStaticParameters( [para], buildSchema )
-
-[<assembly:TypeProviderAssembly>]
-do ()
+    schema.DefineStaticParameters( para, buildSchema )
