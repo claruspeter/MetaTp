@@ -8,28 +8,33 @@ open ProviderImplementation.ProvidedTypes
 open helper
 open proxyHelper
 
+type MetaParameters =
+  {
+    nameSpace: string;
+    typeName: string;
+    yourTypeParameters: MetaParameter list;
+    schemaFromParameters: obj[] -> MetaTable[]
+  }
+
 type MetaProvider(
                     config: TypeProviderConfig,
-                    ns:string,
-                    typeName:string,
-                    initialisationParameters: MetaColumn list,
-                    tables: obj[] -> MetaTable[]
+                    parameters: MetaParameters
                   ) as this =
   inherit TypeProviderForNamespaces()
   let asm = (Assembly.LoadFrom(config.RuntimeAssembly))
-  let para = initialisationParameters |> List.map (fun p -> ProvidedStaticParameter(p.name, p.coltype))
-  let schema = helper.makeType asm ns typeName
+  let para = parameters.yourTypeParameters |> List.map (fun p -> ProvidedStaticParameter(p.name, p.paratype))
+  let schema = helper.makeType asm parameters.nameSpace parameters.typeName
 
   let buildSchema =
     fun (typeName:string) (parameterValues: obj[]) ->
-        let tableData = parameterValues |> tables
+        let tableData = parameterValues |> parameters.schemaFromParameters
         typeName
-          |> makeType asm ns
+          |> makeType asm parameters.nameSpace
           |> addMembers (tableData |> Array.map twoLevelProp)
           |> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
   do
-    this.AddNamespace(ns, [helper.addIncludedType schema])
+    this.AddNamespace(parameters.nameSpace, [helper.addIncludedType schema])
   do
     schema.DefineStaticParameters( para, buildSchema )
