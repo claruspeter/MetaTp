@@ -25,13 +25,18 @@ type MetaProvider(
   let para = parameters.yourTypeParameters |> List.map (fun p -> ProvidedStaticParameter(p.name, p.paratype))
   let schema = helper.makeType asm parameters.nameSpace parameters.typeName
 
+  let propsAndProxy table =
+    table 
+    |> twoLevelProp
+    |> addMember ( makeProxy table "Proxy" )
+
   let buildSchema =
     fun (typeName:string) (parameterValues: obj[]) ->
         let tableData = parameterValues |> parameters.schemaFromParameters
         typeName
           |> makeType asm parameters.nameSpace
-          |> addMembers (tableData |> Array.map twoLevelProp)
-          |> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
+          |> addMembers (tableData |> Array.map propsAndProxy )
+          //|> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
   do

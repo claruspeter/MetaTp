@@ -37,13 +37,13 @@ let createCtor nameOfEnclosingType =
   ctor.AddXmlDocDelayed( fun ()-> "Initializes an instance of " + nameOfEnclosingType )
   ctor
 
-let makeProxy (table:MetaTable) =
+let makeProxy (table:MetaTable) proxyName =
   let fields =
     table.columns
     |> Array.map ( fun col -> makeProvidedPrivateReadonlyField ("_" + col.name) col.coltype )
 
   let proxy =
-    makeIncludedType table.name
+    makeIncludedType proxyName
     |> addMembers fields
     |> addMember (createCtor table.name)
     //|> addMember (createSimpleToString name)
