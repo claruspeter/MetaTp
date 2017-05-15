@@ -1,4 +1,4 @@
-namespace metatp
+namespace MetaTp
 
 open System
 

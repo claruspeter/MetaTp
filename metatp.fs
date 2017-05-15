@@ -1,12 +1,12 @@
-namespace metatp
+namespace MetaTp
 
 open System
 open System.IO
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
 open ProviderImplementation.ProvidedTypes
-open helper
-open proxyHelper
+open MetaTp.Helper
+open MetaTp.Proxies
 
 type MetaParameters =
   {
@@ -23,7 +23,7 @@ type MetaProvider(
   inherit TypeProviderForNamespaces()
   let asm = (Assembly.LoadFrom(config.RuntimeAssembly))
   let para = parameters.yourTypeParameters |> List.map (fun p -> ProvidedStaticParameter(p.name, p.paratype))
-  let schema = helper.makeType asm parameters.nameSpace parameters.typeName
+  let schema = Helper.makeType asm parameters.nameSpace parameters.typeName
 
   let propsAndProxy table =
     table 
@@ -40,6 +40,6 @@ type MetaProvider(
           |> addIncludedType
 
   do
-    this.AddNamespace(parameters.nameSpace, [helper.addIncludedType schema])
+    this.AddNamespace(parameters.nameSpace, [Helper.addIncludedType schema])
   do
     schema.DefineStaticParameters( para, buildSchema )

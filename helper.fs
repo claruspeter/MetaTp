@@ -1,4 +1,4 @@
-module metatp.helper
+module MetaTp.Helper
 
 open System
 open System.IO

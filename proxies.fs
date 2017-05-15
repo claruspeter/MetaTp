@@ -1,11 +1,11 @@
-module metatp.proxyHelper
+module MetaTp.Proxies
 
 open System
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
 open ProviderImplementation.ProvidedTypes
 open Microsoft.FSharp.Quotations
-open helper
+open Helper
 
 let makeProvidedPrivateReadonlyField fieldName fieldType =
   let field = ProvidedField(fieldName, fieldType)
