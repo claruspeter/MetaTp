@@ -83,9 +83,13 @@ printfn "%A" Pizza42.Address.NAME    //Auto generated member that equals "Addres
 printfn "%A" Pizza42.Address.Street  //String static prop with value "Street"
 
 let jjj = new Pizza42.Address.Proxy()    //A type with default constructor
-                                      // and properties Street,...
+                                         // and properties Street,...
 
 ````
+
+## Working Example
+
+An working OSS project that uses this library can be found at <https://github.com/claruspeter/neo4jtypeprovider>.
 
 # Licence
 
