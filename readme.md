@@ -24,18 +24,23 @@ Points to note:
 ````` fsharp
 open MetaTp
 
-let getSchemaFromDataSource someParameters_InTheSameOrder = 
-    [|
-        {
-        name="Address"; 
-        columns=
-            [|
-            {name="Number"; coltype=typeof<int>}
-            {name="Street"; coltype=typeof<string>}
-            {name="City"; coltype=typeof<string>}
-            |] 
-        }
-    |]
+let getSchemaFromDataSource (someParameters_InTheSameOrder: obj[]) = 
+  match someParameters_InTheSameOrder with
+  | [| :? string as connectionstring; :? int as theNumber;|] ->
+        [|  //TODO: insert your own magic here to query your data source
+            //      and return your types & columns
+            {
+            name="Address"; 
+            columns=
+                [|
+                {name="Number"; coltype=typeof<int>}
+                {name="Street"; coltype=typeof<string>}
+                {name="City"; coltype=typeof<string>}
+                |] 
+            }
+        |]
+  | _ -> failwith "not the parameters that I expected!!!"
+
 
 let myProviderParameters =
     {
@@ -44,12 +49,12 @@ let myProviderParameters =
         yourTypeParameters = 
           [
             {name="ConnectionStringMaybe"; paratype = typeof<string>}
-            {name="SomeRandomNumberPerhaps"; paratype = typeof<int>}
+            {name="SomeImportantNumberPerhaps"; paratype = typeof<int>}
           ]
-        schemaFromParameters = getSchemaFromDataSource
+        schemaFromParameters = getSchemaFromDataSource  //callback to get type definitions
     }
 
-
+// A bit of necessary boilerplate
 [<Microsoft.FSharp.Core.CompilerServices.TypeProvider>]
 type MyProvider(config) =
     inherit MetaTp.MetaProvider(config, myProviderParameters )
@@ -61,10 +66,10 @@ type MyProvider(config) =
 
 ## How to use the type provider that you have created
 
-The user includes your finished library, and constructs a type based on your
+The user can now include _your_ finished type provider library, and constructs a type based on _your_
 type provider including any type parameters you may have specified.
 
-At this time the "callback" is called and your _magic_ code connects to your 
+At this time the "callback" is called and your personalized code connects to your 
 data source and produces the schema to code against.
 
 [from Script.fsx](Script.fsx)
@@ -72,12 +77,12 @@ data source and produces the schema to code against.
 
 open MetaTp.Sample
 // Define your library scripting code here
-type test = Fred.Pizza<"Maybe a connection string", SomeRandomNumberPerhaps=42>
+type Pizza42 = Fred.Pizza<"Maybe a connection string", SomeImportantNumberPerhaps=42>
 
-printfn "%A" test.Address.NAME    //Auto generated member that equals "Address"
-printfn "%A" test.Address.Street  //String static prop with value "Street"
+printfn "%A" Pizza42.Address.NAME    //Auto generated member that equals "Address"
+printfn "%A" Pizza42.Address.Street  //String static prop with value "Street"
 
-let jjj = new test.Address.Proxy()    //A type with default constructor
+let jjj = new Pizza42.Address.Proxy()    //A type with default constructor
                                       // and properties Street,...
 
 ````

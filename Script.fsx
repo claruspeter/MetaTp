@@ -6,12 +6,12 @@
 
 open MetaTp.Sample
 // Define your library scripting code here
-type test = Fred.Pizza<"Maybe a connection string here", SomeRandomNumberPerhaps=42>
+type Pizza42 = Fred.Pizza<"Maybe a connection string here", SomeImportantNumberPerhaps=42>
 
-printfn "%A" test.Address.NAME
-printfn "%A" test.Address.Street
+printfn "%A" Pizza42.Address.NAME
+printfn "%A" Pizza42.Address.Street
 
-let jjj = test.Address.Proxy()
+let jjj = Pizza42.Address.Proxy()
 jjj.Street <- "Dinnis Ave"
 jjj.Number <- 19
 jjj.Street

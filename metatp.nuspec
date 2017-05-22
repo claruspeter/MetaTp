@@ -9,10 +9,11 @@
   <summary>@summary@</summary>
   <licenseUrl>http://unlicense.org</licenseUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <projectUrl>https://github.com/claruspeter/MetaTp</projectUrl>
   <description>@description@</description>
   <releaseNotes>@releaseNotes@</releaseNotes>
   <copyright>UnliLicence Haumohio 2016</copyright>
-  <tags></tags>
+  <tags>F# fsharp TypeProvider</tags>
   @dependencies@
   @references@
   </metadata>

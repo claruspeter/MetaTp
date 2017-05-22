@@ -39,7 +39,7 @@ type MetaProvider(
           //|> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
-  let handler = System.ResolveEventHandler(fun _ args ->
+  let dependencyResolve = System.ResolveEventHandler(fun _ args ->
         let asmName = AssemblyName(args.Name)
         let expectedName = asmName.Name + ".dll"
         let packageLocation = Path.Combine( config.ResolutionFolder, "packages", asmName.Name, "lib", "net45", expectedName)
@@ -53,8 +53,8 @@ type MetaProvider(
         | _, _ -> null
       )
 
-  do System.AppDomain.CurrentDomain.add_AssemblyResolve handler
-
+  do 
+    System.AppDomain.CurrentDomain.add_AssemblyResolve dependencyResolve
   do
     this.AddNamespace(parameters.nameSpace, [Helper.addIncludedType schema])
   do

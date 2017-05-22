@@ -3,18 +3,22 @@ module MetaTp.Sample
 open System
 open MetaTp
 
-let getSchemaFromDataSource someParameters_InTheSameOrder = 
-    [|
-        {
-        name="Address"; 
-        columns=
-            [|
-            {name="Number"; coltype=typeof<int>}
-            {name="Street"; coltype=typeof<string>}
-            {name="City"; coltype=typeof<string>}
-            |] 
-        }
-    |]
+let getSchemaFromDataSource (someParameters_InTheSameOrder: obj[]) = 
+  match someParameters_InTheSameOrder with
+  | [| :? string as connectionstring; :? int as theNumber;|] ->
+        [|  //TODO: insert your own magic here to query your data source
+            //      and return your types & columns
+            {
+            name="Address"; 
+            columns=
+                [|
+                {name="Number"; coltype=typeof<int>}
+                {name="Street"; coltype=typeof<string>}
+                {name="City"; coltype=typeof<string>}
+                |] 
+            }
+        |]
+  | _ -> failwith "not the parameters that I expected!!!"
 
 let myProviderParameters =
     {
@@ -23,7 +27,7 @@ let myProviderParameters =
         yourTypeParameters = 
           [
             {name="ConnectionStringMaybe"; paratype = typeof<string>}
-            {name="SomeRandomNumberPerhaps"; paratype = typeof<int>}
+            {name="SomeImportantNumberPerhaps"; paratype = typeof<int>}
           ]
         schemaFromParameters = getSchemaFromDataSource
     }
