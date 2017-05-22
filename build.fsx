@@ -45,7 +45,7 @@ Target "CreatePackage" (fun _ ->
       OutputPath = packagedDir
       WorkingDir = "."
       Summary = "A meta type provider for creating simple type providers from plain old f# objects"
-      Version = "0.2"
+      Version = "0.3"
       //AccessKey = myAccesskey
       Publish = false
       Files = [(@"build/metatp.dll", Some @"lib/net45", None) ]

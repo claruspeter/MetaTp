@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
+open Microsoft.FSharp.Quotations
 open ProviderImplementation.ProvidedTypes
 
 
@@ -32,7 +33,19 @@ let internal toStaticProps (vals:string[]) =
 let asStaticParam nm =
   ProvidedStaticParameter(nm, typeof<string>)
 
+let createSimpleToString name =
+    let met = ProvidedMethod( 
+                "ToString", 
+                [], 
+                typeof<unit>)
+    met.InvokeCode <- fun args ->
+                        let response = Expr.Value name
+                        response
+    met
+
 let twoLevelProp (table:MetaTable) : ProvidedTypeDefinition =
   makeIncludedType table.name
   |> addMember (createStaticProp "NAME" table.name)
   |> addMembers (table.columns|> Array.map (fun t->t.name) |> toStaticProps)
+
+

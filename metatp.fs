@@ -39,6 +39,22 @@ type MetaProvider(
           //|> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
+  let handler = System.ResolveEventHandler(fun _ args ->
+        let asmName = AssemblyName(args.Name)
+        let expectedName = asmName.Name + ".dll"
+        let packageLocation = Path.Combine( config.ResolutionFolder, "packages", asmName.Name, "lib", "net45", expectedName)
+        let localLocation =
+            let d = IO.Path.GetDirectoryName(config.RuntimeAssembly)
+            IO.Path.Combine(d, expectedName)
+        printfn "Attempting to load dependency %A for %A" asmName.Name config.RuntimeAssembly
+        match File.Exists localLocation, File.Exists packageLocation with
+        | true, _ -> Assembly.LoadFrom localLocation
+        | _, true -> Assembly.LoadFrom packageLocation
+        | _, _ -> null
+      )
+
+  do System.AppDomain.CurrentDomain.add_AssemblyResolve handler
+
   do
     this.AddNamespace(parameters.nameSpace, [Helper.addIncludedType schema])
   do
