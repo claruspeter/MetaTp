@@ -39,13 +39,15 @@ Target "CreatePackage" (fun _ ->
 
   NuGet (fun p ->
     {p with
-      Authors = ["@peterchch"]
+      Title = "MetaTP"
+      Authors = ["Haumohio"]
       Project = "MetaTp"
       Description = "A meta type provider for creating simple type providers from plain old f# objects"
       OutputPath = packagedDir
       WorkingDir = "."
       Summary = "A meta type provider for creating simple type providers from plain old f# objects"
-      Version = "0.3"
+      Version = "0.3.2"
+      Copyright = "UniLicence Haumohio 2017"
       //AccessKey = myAccesskey
       Publish = false
       Files = [(@"build/metatp.dll", Some @"lib/net45", None) ]
