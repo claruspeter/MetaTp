@@ -82,8 +82,8 @@ type Pizza42 = Fred.Pizza<"Maybe a connection string", SomeImportantNumberPerhap
 printfn "%A" Pizza42.Address.NAME    //Auto generated member that equals "Address"
 printfn "%A" Pizza42.Address.Street  //String static prop with value "Street"
 
-let jjj = new Pizza42.Address.Proxy()    //A type with default constructor
-                                         // and properties Street,...
+let jjj = Pizza42.Proxies.Address()    //A type with default constructor
+                                       // and properties Street,...
 
 ````
 

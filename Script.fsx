@@ -11,7 +11,7 @@ type Pizza42 = Fred.Pizza<"Maybe a connection string here", SomeImportantNumberP
 printfn "%A" Pizza42.Address.NAME
 printfn "%A" Pizza42.Address.Street
 
-let jjj = Pizza42.Address.Proxy()
+let jjj = Pizza42.Proxies.Address()
 jjj.Street <- "Dinnis Ave"
 jjj.Number <- 19
 jjj.Street
