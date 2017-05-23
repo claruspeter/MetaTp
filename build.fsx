@@ -46,7 +46,7 @@ Target "CreatePackage" (fun _ ->
       OutputPath = packagedDir
       WorkingDir = "."
       Summary = "A meta type provider for creating simple type providers from plain old f# objects"
-      Version = "0.3.3"
+      Version = "0.4"
       Copyright = "UniLicence Haumohio 2017"
       //AccessKey = myAccesskey
       Publish = false

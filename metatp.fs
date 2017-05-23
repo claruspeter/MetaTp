@@ -28,7 +28,7 @@ type MetaProvider(
   let propsAndProxy table =
     table 
     |> twoLevelProp
-    |> addMember ( makeProxy table "Proxy" )
+    |> addMember ( makeNamedProxy table "Proxy" )
 
   let buildSchema =
     fun (typeName:string) (parameterValues: obj[]) ->
@@ -36,7 +36,7 @@ type MetaProvider(
         typeName
           |> makeType asm parameters.nameSpace
           |> addMembers (tableData |> Array.map propsAndProxy )
-          //|> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
+          |> addMember (makeIncludedType "Proxies" |> addMembers (tableData |> Array.map makeProxy))
           |> addIncludedType
 
   let dependencyResolve = System.ResolveEventHandler(fun _ args ->

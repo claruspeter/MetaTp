@@ -37,10 +37,8 @@ let createCtor nameOfEnclosingType =
   ctor.AddXmlDocDelayed( fun ()-> "Initializes an instance of " + nameOfEnclosingType )
   ctor
 
-
-
-
-let makeProxy (table:MetaTable) proxyName =
+ 
+let makeNamedProxy (table:MetaTable) proxyName =
   let fields =
     table.columns
     |> Array.map ( fun col -> makeProvidedPrivateReadonlyField ("_" + col.name) col.coltype )
@@ -52,3 +50,6 @@ let makeProxy (table:MetaTable) proxyName =
 
   let propertythunk (col:ProvidedField) = makeInstanceProp col proxy
   proxy |> addMembers ( fields |> Array.map ( propertythunk ))
+
+let makeProxy (table:MetaTable) =
+  makeNamedProxy table table.name
